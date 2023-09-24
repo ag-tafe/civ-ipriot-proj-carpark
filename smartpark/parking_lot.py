@@ -2,13 +2,7 @@ import paho.mqtt.client as mqtt
 
 ### Class: ParkingLot
 class ParkingLot:
-    '''Import the library in your code using `import paho.mqtt.client as mqtt`.
-    - Create an MQTT client instance: `client = mqtt.Client()`.
-    - Connect the client to the MQTT broker using the provided host and port: `client.connect(broker_host, broker_port)`.
-    - Subscribe to a topic to receive messages: `client.subscribe("topic_name")`.
-    - Define a callback function to handle received messages: `def on_message(client, userdata, message): ....`
-    - Assign the callback function to the client: `client.on_message = on_message`.
-    - Start the client loop to process network traffic: `client.loop_start()`.'''
+    '''The parking lot reports its state to display'''
 
     def __init__(self, config):
         """Initialize the ParkingLot object with the given configuration."""
@@ -17,11 +11,13 @@ class ParkingLot:
         """The total number of parking spaces."""
         self.total_spaces = config["total_spaces"]
         """The number of available parking spaces."""
-        self.available_spaces =
+        self.available_spaces = config["total_spaces"] // 2
         """The MQTT client to send and receive messages."""
-        self.mqtt_client = mqtt.Client()
-        self.mqtt_client.connect(config["broker_host"], config["broker_port"])
-        self.mqtt_client.subscribe("topic_name")
+        self.mqtt_client = mqtt.Client()  # Create an MQTT client instance
+        self.mqtt_client.connect(config["broker_host"], config["broker_port"])  # Connect the client to the MQTT broker using the provided host and port
+        self.mqtt_client.subscribe("topic_name") # Subscribe to a topic to receive messages
+        self.mqtt_client.on_message = self.on_message # Assign the callback function to the client
+        self.mqtt_client.loop_start() # Start the client loop to process network traffic
 
     def enter(self):
         """Register a car entering the parking lot."""
@@ -34,3 +30,9 @@ class ParkingLot:
    def publish_update(self):
        """Publish an update containing available_spaces, temperature, and time."""
        #self.mqtt_client
+       pass
+
+   def on_message(client, userdata, message):
+       """Callback function to handle received messages."""
+       pass
+
