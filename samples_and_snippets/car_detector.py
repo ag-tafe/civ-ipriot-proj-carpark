@@ -7,15 +7,10 @@ if __name__ != '__main__':
 class CarDetector:
     """Provides a couple of simple buttons that can be used to represent a sensor detecting a car. This is a skeleton only."""
 
-    def __init__(self):
-        self.configuration = parse_config()
-        self.location = self.configuration['location']
-        self.client_id = self.location + " car detector"
-        self.client = mqtt.Client(self.client_id)
-        host = self.configuration["broker_host"]
-        port = self.configuration["broker_port"]
-        self.client.connect(host, port)
-        print(f"{self.client_id} connected to {host} on port {port}")
+    def __init__(self, configuration):
+        self.initialize_values(configuration)
+        self.initialize_mqtt()
+
 
         self.root = tk.Tk()
         self.root.title("Car Detector ULTRA")
@@ -39,3 +34,23 @@ class CarDetector:
         print("Car goes out")
         self.client.publish(self.location, "car goes out")
 
+    def on_connect(self, client, userdata, flags, rc):
+        print(time.strftime("%H:%M:%S"), self.client_id, end=' ')
+        print(f'connected to {self.server_host} on port {self.server_port}', end=' ')
+        print(f'Connected with result code {rc}')
+
+    def initialize_values(self, configuration: dict) -> None:
+        '''Initialize car park with values from configuration dictionary'''
+        self.location = configuration['location']
+        self.server_host = configuration["broker_host"]
+        self.server_port = configuration["broker_port"]
+
+    def initialize_mqtt(self) -> None:
+        '''Initialize mqtt client'''
+        self.client_id = self.location + " car detector"
+        self.client = mqtt.Client(self.client_id)
+        host = self.server_host
+        port = self.server_port
+        self.client.on_connect = self.on_connect
+        self.client.connect(host, port)
+        self.client.loop_start()
