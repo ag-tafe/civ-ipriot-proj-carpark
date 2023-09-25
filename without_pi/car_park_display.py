@@ -1,5 +1,5 @@
 if __name__ != '__main__':
-    from no_pi import WindowedDisplay
+    from run_car_park_display import WindowedDisplay
     import threading
     import time
     import paho.mqtt.client as mqtt
