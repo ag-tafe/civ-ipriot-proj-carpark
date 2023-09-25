@@ -3,9 +3,6 @@ If you have a Raspberry Pi, or a SenseHAT emulator under Debian, you do not need
 
 You need to split the classes here into two files, one for the CarParkDisplay and one for the CarDetector.
 Attend to the TODOs in each class to complete the implementation."""
-import random
-import threading
-import time
 import tkinter as tk
 from typing import Iterable
 import tomli
@@ -71,13 +68,26 @@ class WindowedDisplay:
 # TODO: STUDENT IMPLEMENTATION STARTS HERE #
 # -----------------------------------------#
 def parse_config(file_name: str='toml_no_pi_configuration.toml') -> dict:
-    """Parse the config file and return the values as a dictionary"""
-    # TODO: get the configuration from a parsed file
-    handle = open(file_name, 'r')
+    """Parse the config file and return the values as a dictionary
+
+    Parameters
+    ----------
+    file_name : str
+        The name of the configuration to read from (default: toml_no_pi_configuration.toml).
+        The file must be in the same folder as the main script.
+
+    Returns
+    ----------
+        A dictionary with keys-values for location, total_spaces, broker_host, broker_port.
+    """
+
+    try:
+        handle = open(file_name, 'r')
+    except:
+        raise Exception(f"Error, couldn't open configuration file for reading: {file_name}")
     configuration_string = handle.read()
     handle.close()
     config = tomli.loads(configuration_string)
-    #return {'location': 'TBD', 'total_spaces': 0, 'broker_host': 'TBD', 'broker_port': 0}
     return config
 
 if __name__ == '__main__':
