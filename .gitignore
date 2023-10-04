@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# MS Word backup
+~$-IoT-Prj.docx
+
 # C extensions
 *.so
 
