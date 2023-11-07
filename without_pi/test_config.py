@@ -1,9 +1,8 @@
 import unittest
 import os
 
-import tomli  # you can use toml, json,yaml, or ryo for your config file
+import tomli
 
-#from without_pi.config_parser import parse_config as pc
 from without_pi.main02 import parse_config as pc
 
 class TestConfigParsing(unittest.TestCase):
@@ -33,7 +32,6 @@ class TestConfigParsing(unittest.TestCase):
         broker_host = "localhost"
         broker_port = 1883
         '''
-        # writing into the test file.
         # https://realpython.com/working-with-files-in-python/#pythons-with-open-as-pattern
         with open(file_name, 'w') as handle:
             handle.write(config_string)
@@ -43,10 +41,10 @@ class TestConfigParsing(unittest.TestCase):
 
         parking_lot = pc('test_tomli.toml')
         parking_lot = parking_lot['parking_lot']
-        self.assertEqual(parking_lot['location'], config["parking_lot"]["location"])
-        self.assertEqual(parking_lot['total_spaces'], config["parking_lot"]["total_spaces"])
-        self.assertEqual(parking_lot['broker_host'], config["parking_lot"]['broker_host'])
-        self.assertEqual(parking_lot['broker_port'], config["parking_lot"]['broker_port'])
+        self.assertEqual(parking_lot['location'], "Moondalup City Square Parking")
+        self.assertEqual(parking_lot['total_spaces'], 192)
+        self.assertEqual(parking_lot['broker_host'], "localhost")
+        self.assertEqual(parking_lot['broker_port'], 1883)
 
 if __name__ == '__main__':
     unittest.main()

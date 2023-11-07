@@ -75,27 +75,6 @@ class CarParkDisplay:
             else:
                 raise Exception("Unable to process key:", key)
 
-        if decoded_message == "car goes in":
-            if self.available_bays > 0:
-                self.available_bays -= 1
-            else:
-                print("Sorry the car park is full!")
-        if decoded_message == "car goes out":
-            if self.bays != self.available_bays:
-                self.available_bays += 1
-            else:
-                print("No car can exit an empty car park!")
-
-        if decoded_message.startswith("temp: "):
-            self.temperature = int(decoded_message.split(": ")[1])
-            print(f"Set the temperature on display to {self.temperature}")
-
-        if decoded_message.startswith("time: "):
-            self.time = decoded_message.split(": ")[1]
-            print(f"Set the time on display to {self.time}")
-
-        self.loopflag = False
-
     def initialize_values(self, configuration: dict) -> None:
         """Initializes car park instance with values from configuration dictionary
 
@@ -109,7 +88,7 @@ class CarParkDisplay:
             None.
         """
         self.location = configuration['location']
-        self.bays = self.available_bays = configuration["total_spaces"]
+        self.available_bays = configuration["total_spaces"]
         self.server_host = configuration["broker_host"]
         self.server_port = configuration["broker_port"]
         self.temperature = 20
@@ -117,8 +96,6 @@ class CarParkDisplay:
 
     def initialize_mqtt(self) -> None:
         '''Initialize mqtt client'''
-        self.loopflag = True
-        #self.firstrun = True
         self.client_id = self.location + " display"
         self.client = mqtt.Client(self.client_id)
         host = self.server_host

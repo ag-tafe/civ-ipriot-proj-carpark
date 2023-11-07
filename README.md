@@ -39,7 +39,8 @@ pip install -e .
 cd without_pi
 ```
 The folder contents are listed below.
-You'll need to run "run_car_detector.py" and run "run_car_park_display.py"
+You'll need to make sure mqtt broker service is running on default port (1883) on localhost or update "toml_no_pi_configuration.toml" accordingly.
+Run "main01.py" and run "main02.py"
 at the same time e.g.
 ```bash
 python3 main01.py
