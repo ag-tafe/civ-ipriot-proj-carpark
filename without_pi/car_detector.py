@@ -4,6 +4,7 @@ if __name__ != '__main__':
     import paho.mqtt.client as mqtt
     import random
     import sys
+    import json
 
 
 class Sensor:
@@ -18,13 +19,12 @@ class Sensor:
         return self.temperature
 
 class CarDetector:
-    """Provides a couple of simple buttons that can be used to represent a sensor detecting a car. This is a skeleton only."""
+    """Provides a couple of simple buttons that can be used to represent a sensor detecting a car."""
 
     def __init__(self, configuration: dict):
         self.initialize_values(configuration)
         self.initialize_mqtt()
         self.sensor = Sensor()
-
 
         self.root = tk.Tk()
         self.root.title("Car Detector ULTRA")
@@ -42,19 +42,32 @@ class CarDetector:
         """Sends messages via MQTT about car going in with temperature and time values."""
         print("Car goes in")
         temperature = self.sensor.read_temperature()
+        total_spaces = self.total_spaces
         time_stamp = time.strftime("%H:%M:%S")
-        self.client.publish(self.location, "car goes in")
-        self.client.publish(self.location, f"temp: {temperature}")
-        self.client.publish(self.location, f"time: {time_stamp}")
+        if self.total_cars < total_spaces:
+            self.total_cars += 1
+            available_bays = total_spaces - self.total_cars
+            if self.total_cars == total_spaces:
+                # https://stackoverflow.com/questions/53580507/disable-enable-button-in-tkinter
+                self.btn_incoming_car["state"] = "disabled"
+            # amending protocol to make it json
+            # https://www.freecodecamp.org/news/how-to-use-the-json-module-in-python/
+            message = json.dumps({"available_bays": available_bays, "temperature": temperature, "time": time_stamp})
+            self.client.publish(self.location, message)
+
 
     def outgoing_car(self) -> None:
         """Sends messages via MQTT about car going out with temperature and time values."""
         print("Car goes out")
         temperature = self.sensor.read_temperature()
         time_stamp = time.strftime("%H:%M:%S")
-        self.client.publish(self.location, "car goes out")
-        self.client.publish(self.location, f"temp: {temperature}")
-        self.client.publish(self.location, f"time: {time_stamp}")
+
+        if self.total_cars < total_spaces:
+            self.btn_incoming_car["state"] = "enable"
+        # amending protocol to make it json
+        # https://www.freecodecamp.org/news/how-to-use-the-json-module-in-python/
+        message = json.dumps({"action": "out", "temperature": temperature, "time": time_stamp})
+        self.client.publish(self.location, message)
 
     def on_connect(self, client, userdata, flags, rc) -> None:
         """Called when the broker responds to our connection request. https://pypi.org/project/paho-mqtt/#callbacks
@@ -90,9 +103,11 @@ class CarDetector:
         Returns
             None.
         """
-        self.location = configuration['location']
+        self.location = configuration["location"]
         self.server_host = configuration["broker_host"]
         self.server_port = configuration["broker_port"]
+        self.total_spaces = self.available_spaces = configuration["total_spaces"]
+        self.total_cars = 0
 
     def initialize_mqtt(self) -> None:
         """Initialize mqtt client

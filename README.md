@@ -40,12 +40,19 @@ cd without_pi
 ```
 The folder contents are listed below.
 You'll need to run "run_car_detector.py" and run "run_car_park_display.py"
-at the same time
+at the same time e.g.
+```bash
+python3 main01.py
+```
+```bash
+python3 main02.py
+```
+The directory contents:
 ```text
 │
 ├── without_pi/
-│   ├── run_car_detector.py           <-- run this
-│   ├── run_car_park_display.py       <-- and that
+│   ├── main01.py           <-- run this
+│   ├── main02.py       <-- and that
 │   ├── requirements.txt           <-- project dependencies
 │   ├── car_detector.py      <-- classes CarDetector, Sensor
 │   ├── car_park_display.py  < -- class CarParkDisplay
@@ -53,9 +60,9 @@ at the same time
 │   └── toml_no_pi_configuration.toml <-- toml configuration
 ```
 
-- **`run_car_detector.py`**: Reads the configuration file and passes dictionary to the classes initializers. The window has 2 buttons for incoming and outgoing car.
+- **`main01.py`**: Reads the configuration file and passes dictionary to the classes initializers. The window has 2 buttons for incoming and outgoing cars.
  Once the user clicks on either button a random temperature value, time stamp and the fact that a car has entered or exited the car park are sent via MQTT protocol.   
-- **`run_car_park_display.py`**: This is a "screen" with information for a car park manager or a car park user. This window receives data via MQTT protocol and updates available bays, temperature, last update time and current time. 
+- **`main02.py`**: This is a "screen" with information for a car park manager or a car park user. This window receives data via MQTT protocol and updates available bays, temperature, last update time and current time. 
 
 ## Test
 Run test_config.py

@@ -3,6 +3,7 @@ if __name__ != '__main__':
     import threading
     import time
     import sys
+    import json
     import paho.mqtt.client as mqtt
 
 class CarParkDisplay:
@@ -60,6 +61,20 @@ class CarParkDisplay:
 
         decoded_message = str(message.payload.decode("utf-8"))
         print(time.strftime("%H:%M:%S"), self.client_id, " got a message from broker:", decoded_message)
+        # convert dictionary string to dictionary
+        # https://www.geeksforgeeks.org/python-convert-string-dictionary-to-dictionary/
+        recevied_values = json.loads(decoded_message)
+
+        for key, value in recevied_values.items():
+            if key == 'available_bays':
+                self.available_bays = value
+            elif key == 'temperature':
+                self.temperature = value
+            elif key == 'time':
+                self.time = value
+            else:
+                raise Exception("Unable to process key:", key)
+
         if decoded_message == "car goes in":
             if self.available_bays > 0:
                 self.available_bays -= 1
@@ -94,17 +109,16 @@ class CarParkDisplay:
             None.
         """
         self.location = configuration['location']
-        self.bays = configuration["total_spaces"]
+        self.bays = self.available_bays = configuration["total_spaces"]
         self.server_host = configuration["broker_host"]
         self.server_port = configuration["broker_port"]
-        self.available_bays = self.bays
         self.temperature = 20
         self.time = time.strftime("%H:%M:%S")
 
     def initialize_mqtt(self) -> None:
         '''Initialize mqtt client'''
         self.loopflag = True
-        self.firstrun = True
+        #self.firstrun = True
         self.client_id = self.location + " display"
         self.client = mqtt.Client(self.client_id)
         host = self.server_host
