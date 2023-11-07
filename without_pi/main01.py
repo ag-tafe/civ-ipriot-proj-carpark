@@ -1,17 +1,6 @@
-"""The following code is used to provide an alternative to students who do not have a Raspberry Pi.
-If you have a Raspberry Pi, or a SenseHAT emulator under Debian, you do not need to use this code.
-
-You need to split the classes here into two files, one for the CarParkDisplay and one for the CarDetector.
-Attend to the TODOs in each class to complete the implementation."""
 import tkinter as tk
 from typing import Iterable
 import tomli
-
-# ------------------------------------------------------------------------------------#
-# You don't need to understand how to implement this class, just how to use it.       #
-# ------------------------------------------------------------------------------------#
-# TODO: got to the main section of this script **first** and run the CarParkDisplay.  #
-
 
 class WindowedDisplay:
     """Displays values for a given set of fields as a simple GUI window. Use .show() to display the window; use .update() to update the values displayed.
@@ -64,9 +53,6 @@ class WindowedDisplay:
                     text=updated_values[self.gui_elements[field].cget('text').rstrip(self.SEP)])
         self.window.update()
 
-# -----------------------------------------#
-# TODO: STUDENT IMPLEMENTATION STARTS HERE #
-# -----------------------------------------#
 def parse_config(file_name: str='toml_no_pi_configuration.toml') -> dict:
     """Parse the config file and return the values as a dictionary
 
@@ -82,16 +68,16 @@ def parse_config(file_name: str='toml_no_pi_configuration.toml') -> dict:
     """
 
     try:
-        handle = open(file_name, 'r')
-    except:
+        with open(file_name, 'r') as handle:
+            configuration_string = handle.read()
+    except FileNotFoundError:
         raise Exception(f"Error, couldn't open configuration file for reading: {file_name}")
-    configuration_string = handle.read()
-    handle.close()
+
     config = tomli.loads(configuration_string)
     return config
 
 if __name__ == '__main__':
     configuration = parse_config()
 
-    from car_park_display import CarParkDisplay
-    CarParkDisplay(configuration)
+    from car_detector import CarDetector
+    CarDetector(configuration)

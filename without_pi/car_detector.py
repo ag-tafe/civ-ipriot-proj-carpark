@@ -3,6 +3,7 @@ if __name__ != '__main__':
     import time
     import paho.mqtt.client as mqtt
     import random
+    import sys
 
 
 class Sensor:
@@ -110,8 +111,5 @@ class CarDetector:
             self.client.connect(host, port)
         except ConnectionRefusedError:
             print(f"No connection could be made by {self.client_id} because the target machine {host} actively refused it")
-            quit()
-        except:
-            print(f"Error! Unknown error occurred when establishing connection from {self.client_id} to {host} on port {port}")
-            quit()
+            sys.exit(1)
         self.client.loop_start()

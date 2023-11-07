@@ -1,13 +1,13 @@
 if __name__ != '__main__':
-    from run_car_park_display import WindowedDisplay
+    from main02 import WindowedDisplay
     import threading
     import time
+    import sys
     import paho.mqtt.client as mqtt
 
 class CarParkDisplay:
-    """Provides a simple display of the car park status. This is a skeleton only. The class is designed to be customizable without requiring and understanding of tkinter or threading."""
+    """Provides a simple display of the car park status."""
     # determines what fields appear in the UI
-    #fields = ['Available bays', 'Temperature', 'At']
     fields = ['Available bays', 'Temperature', 'Updated at', "Time"]
 
     def __init__(self, configuration: dict):
@@ -23,21 +23,11 @@ class CarParkDisplay:
         self.window.show()
 
     def check_updates(self):
-        # TODO: This is where you should manage the MQTT subscription
+        # MQTT subscription is managed here
 
         while True:
             self.client.loop_start()
             time.sleep(0.5)
-            # if self.firstrun == False:
-            #     self.client.loop_start()  # Start the client loop to process network traffic
-            #     while self.loopflag == True:   # wait on updates from MQTT
-            #         time.sleep(1)
-            #
-            #     self.loopflag = True
-            #
-            # else:
-            #     time.sleep(1)       # one second break on the first run to fill in the default values
-            # self.firstrun = False
 
             # NOTE: Dictionary keys *must* be the same as the class fields
             field_values = dict(zip(CarParkDisplay.fields, [
@@ -124,10 +114,7 @@ class CarParkDisplay:
             self.client.connect(host, port)
         except ConnectionRefusedError:
             print(f"No connection could be made by {self.client_id} because the target machine {host} actively refused it")
-            quit()
-        except:
-            print(f"Error! Unknown error occurred when establishing connection from {self.client_id} to {host} on port {port}")
-            quit()
+            sys.exit(1)
 
         self.client.subscribe(self.location)  # Subscribe to a topic to receive messages
         self.client.on_message = self.on_message  # Assign the callback function to the client

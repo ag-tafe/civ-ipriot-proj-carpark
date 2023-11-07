@@ -4,7 +4,8 @@ import os
 import tomli  # you can use toml, json,yaml, or ryo for your config file
 
 #import smartpark.parse_config as pc
-from config_parser import parse_config as pc
+#from without_pi.config_parser import parse_config as pc
+from without_pi.main02 import parse_config as pc
 
 class TestConfigParsing(unittest.TestCase):
     def test_toml_config_file_exists(self):
